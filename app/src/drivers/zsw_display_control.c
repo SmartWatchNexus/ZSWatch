@@ -80,18 +80,21 @@ void zsw_display_control_init(void)
     if (!device_is_ready(touch_dev)) {
         LOG_WRN("Device touch not ready.");
     }
+    if (device_is_ready(counter_dev)) {
+        bri_alarm_start.flags = 0;
+        bri_alarm_start.callback = &brightness_alarm_start_cb;
 
-    bri_alarm_start.flags = 0;
-    bri_alarm_start.callback = &brightness_alarm_start_cb;
+        bri_alarm_run.flags = 0;
+        bri_alarm_run.callback = &brightness_alarm_run_cb;
 
-    bri_alarm_run.flags = 0;
-    bri_alarm_run.callback = &brightness_alarm_run_cb;
+        bri_alarm_stop.flags = 0;
+        bri_alarm_stop.callback = &brightness_alarm_stop_cb;
 
-    bri_alarm_stop.flags = 0;
-    bri_alarm_stop.callback = &brightness_alarm_stop_cb;
-
-    bri_alarm_start.ticks = counter_us_to_ticks(counter_dev, 0);
-    bri_alarm_run.ticks = counter_us_to_ticks(counter_dev, 750);
+        bri_alarm_start.ticks = counter_us_to_ticks(counter_dev, 0);
+        bri_alarm_run.ticks = counter_us_to_ticks(counter_dev, 750);
+    } else {
+        LOG_WRN("Device counter not ready.");
+    }
 
     pm_device_action_run(display_dev, PM_DEVICE_ACTION_SUSPEND);
     if (device_is_ready(touch_dev)) {

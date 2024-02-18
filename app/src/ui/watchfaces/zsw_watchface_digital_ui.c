@@ -18,6 +18,7 @@
 #include <lvgl.h>
 
 #include "../utils/zsw_ui_utils.h"
+#include "zsw_watchface_dropdown_ui.h"
 #include "../../applications/watchface/watchface_app.h"
 
 #ifdef __ZEPHYR__

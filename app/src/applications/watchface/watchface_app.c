@@ -31,6 +31,7 @@
 #include <zephyr/settings/settings.h>
 
 #include "watchface_app.h"
+#include "ui/watchfaces/zsw_watchface_dropdown_ui.h"
 #include "zsw_settings.h"
 #include "events/chg_event.h"
 #include "events/accel_event.h"
@@ -162,6 +163,7 @@ void watchface_app_stop(void)
     k_work_cancel_delayable_sync(&clock_work.work, &canel_work_sync);
     k_work_cancel_delayable_sync(&date_work.work, &canel_work_sync);
     watchfaces[current_watchface]->remove();
+    zsw_watchface_dropdown_ui_remove();
 }
 
 void watchface_change(void)
@@ -172,6 +174,7 @@ void watchface_change(void)
 
     watchfaces[current_watchface]->remove();
     current_watchface = (current_watchface + 1) % num_watchfaces;
+    zsw_watchface_dropdown_ui_remove();
 
     general_work_item.type = OPEN_WATCHFACE;
     __ASSERT(0 <= k_work_schedule(&general_work_item.work, K_MSEC(100)), "FAIL schedule");
@@ -203,6 +206,9 @@ static void general_work(struct k_work *item)
             is_suspended = false;
             watchfaces[current_watchface]->show(watchface_evt_cb, &watchface_settings);
             refresh_ui();
+
+            // Dropdown
+            zsw_watchface_dropdown_ui_add(lv_scr_act());
 
             __ASSERT(0 <= k_work_schedule(&clock_work.work, K_NO_WAIT), "FAIL clock_work");
             __ASSERT(0 <= k_work_schedule(&date_work.work, K_SECONDS(1)), "FAIL clock_work");

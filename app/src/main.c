@@ -424,7 +424,7 @@ static void handle_screen_gesture(lv_dir_t event_code)
                 break;
             }
             case LV_DIR_BOTTOM: {
-                open_application_manager_page(NULL);
+                //open_application_manager_page(NULL);
                 break;
             }
             default:

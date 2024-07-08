@@ -54,6 +54,11 @@ static void on_sink_selected(lea_assistant_device_t *device)
 static void on_source_selected(lea_assistant_device_t *device)
 {
     LOG_DBG("Source %s selected", device->name);
+
+    message_handler(&(struct webusb_message ) {
+        .sub_type = MESSAGE_SUBTYPE_STOP_SCAN
+    }, 0);
+
     message_handler(&(struct webusb_message ) {
         .sub_type = MESSAGE_SUBTYPE_START_SINK_SCAN
     }, 0);

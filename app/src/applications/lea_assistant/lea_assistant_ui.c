@@ -40,6 +40,7 @@ static void timeout_timer_cb(lv_timer_t *timer)
 
 static void click_event_cb(lv_event_t *e)
 {
+    lv_timer_del(timeout_timer);
     lea_assistant_device_t *selected = (lea_assistant_device_t *)lv_event_get_user_data(e);
     click_callback(selected);
 }
@@ -90,7 +91,7 @@ static void scroll_event_cb(lv_event_t *e)
 static void page_init(lv_obj_t *root, const char *header)
 {
     assert(root_page == NULL);
-    timeout_timer = lv_timer_create(timeout_timer_cb, 10000, NULL);
+    timeout_timer = lv_timer_create(timeout_timer_cb, 30000, NULL);
     lv_timer_set_repeat_count(timeout_timer, 1);
 
     root_page = lv_obj_create(root);

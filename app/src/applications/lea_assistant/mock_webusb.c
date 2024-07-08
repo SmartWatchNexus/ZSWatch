@@ -56,6 +56,7 @@ static bool data_found(struct bt_data *data, void *user_data)
             return true;
         default:
             LOG_DBG("Unknown type");
+            return true;
     }
 
     return false;

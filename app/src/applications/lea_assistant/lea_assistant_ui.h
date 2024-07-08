@@ -9,7 +9,7 @@ typedef void(*on_close_cb_t)(void);
 
 void lea_assistant_ui_show(lv_obj_t *root, on_button_press_cb_t on_button_click_cb, on_close_cb_t close_cb);
 
-void lea_assistant_ui_show_sink(on_button_press_cb_t on_button_click_cb);
+void lea_assistant_ui_show_source(on_button_press_cb_t on_button_click_cb);
 
 void lea_assistant_ui_add_list_entry(lea_assistant_device_t *device);
 

@@ -148,10 +148,10 @@ void lea_assistant_ui_show(lv_obj_t *root, on_button_press_cb_t on_button_click_
 {
     click_callback = on_button_click_cb;
     close_callback = close_cb;
-    page_init(root, "Audio source:");
+    page_init(root, "Audio sink:");
 }
 
-void lea_assistant_ui_show_sink(on_button_press_cb_t on_button_click_cb)
+void lea_assistant_ui_show_source(on_button_press_cb_t on_button_click_cb)
 {
     if (root_page != NULL) {
         lv_obj_del(root_page);
@@ -159,7 +159,7 @@ void lea_assistant_ui_show_sink(on_button_press_cb_t on_button_click_cb)
     }
 
     click_callback = on_button_click_cb;
-    page_init(lv_scr_act(), "Audio sink:");
+    page_init(lv_scr_act(), "Audio source:");
 }
 
 void lea_assistant_ui_remove(void)

@@ -42,39 +42,39 @@ static void close_app(void)
     zsw_app_manager_app_close_request(&app);
 }
 
-static void on_sink_selected(lea_assistant_device_t *device)
-{
-    LOG_DBG("Sink %s selected", device->name);
-
-    // Could use `MESSAGE_SUBTYPE_CONNECT_SINK`, but calling it directly so don't need to fill buffer and parse LTV
-    connect_to_sink(&device->addr);
-    close_app();
-}
-
 static void on_source_selected(lea_assistant_device_t *device)
 {
     LOG_DBG("Source %s selected", device->name);
+
+    // Could use `MESSAGE_SUBTYPE_ADD_SOURCE`, but calling it directly so don't need to fill buffer and parse LTV
+    add_source(device->sid, device->pa_interval, device->broadcast_id, &device->addr);
+    close_app();
+}
+
+static void on_sink_selected(lea_assistant_device_t *device)
+{
+    LOG_DBG("Sink %s selected", device->name);
 
     message_handler(&(struct webusb_message ) {
         .sub_type = MESSAGE_SUBTYPE_STOP_SCAN
     }, 0);
 
     message_handler(&(struct webusb_message ) {
-        .sub_type = MESSAGE_SUBTYPE_START_SINK_SCAN
+        .sub_type = MESSAGE_SUBTYPE_START_SOURCE_SCAN
     }, 0);
 
-    // Could use `MESSAGE_SUBTYPE_ADD_SOURCE`, but calling it directly so don't need to fill buffer and parse LTV
-    add_source(device->sid, device->pa_interval, device->broadcast_id, &device->addr);
-    lea_assistant_ui_show_sink(on_sink_selected);
+    // Could use `MESSAGE_SUBTYPE_CONNECT_SINK`, but calling it directly so don't need to fill buffer and parse LTV
+    connect_to_sink(&device->addr);
+    lea_assistant_ui_show_source(on_source_selected);
 }
 
 static void lea_assistant_app_start(lv_obj_t *root, lv_group_t *group)
 {
     LOG_DBG("LEA Assistant app start");
     message_handler(&(struct webusb_message ) {
-        .sub_type = MESSAGE_SUBTYPE_START_SOURCE_SCAN
+        .sub_type = MESSAGE_SUBTYPE_START_SINK_SCAN
     }, 0);
-    lea_assistant_ui_show(root, on_source_selected, close_app);
+    lea_assistant_ui_show(root, on_sink_selected, close_app);
 }
 
 static void lea_assistant_app_stop(void)

@@ -445,7 +445,7 @@ static void security_changed_cb(struct bt_conn *conn, bt_security_t level, enum 
 	/* Connected. Do BAP broadcast assistant discover */
 	LOG_INF("Broadcast assistant discover");
 	err = bt_bap_broadcast_assistant_discover(ba_sink_conn);
-	if (err) {
+	if (false) { // do not disconnect
 		LOG_ERR("Broadcast assistant discover (err %d)", err);
 		err = bt_conn_disconnect(ba_sink_conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
 		if (err) {

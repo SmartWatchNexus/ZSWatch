@@ -22,6 +22,13 @@
 
 #include "message_handler.h"
 
+#define MAX_DEVICES_NUM 16
+
+typedef struct devices_list {
+    uint8_t num;
+    bt_addr_le_t addr[MAX_DEVICES_NUM];
+} devices_list_t;
+
 LOG_MODULE_REGISTER(lea_assistant_app, CONFIG_ZSW_LEA_ASSISTANT_APP_LOG_LEVEL);
 
 // Functions needed for all applications
@@ -35,6 +42,10 @@ static application_t app = {
     .icon = &auracast,
     .start_func = lea_assistant_app_start,
     .stop_func = lea_assistant_app_stop
+};
+
+static devices_list_t devices_list = {
+    .num = 0,
 };
 
 static void close_app(void)
@@ -54,6 +65,8 @@ static void on_source_selected(lea_assistant_device_t *device)
 static void on_sink_selected(lea_assistant_device_t *device)
 {
     LOG_DBG("Sink %s selected", device->name);
+
+    devices_list.num = 0;
 
     message_handler(&(struct webusb_message ) {
         .sub_type = MESSAGE_SUBTYPE_STOP_SCAN
@@ -83,6 +96,8 @@ static void lea_assistant_app_stop(void)
     message_handler(&(struct webusb_message ) {
         .sub_type = MESSAGE_SUBTYPE_STOP_SCAN
     }, 0);
+
+    devices_list.num = 0;
 }
 
 static int lea_assistant_app_add(void)
@@ -94,6 +109,21 @@ static int lea_assistant_app_add(void)
 
 void lea_assistant_app_add_entry(lea_assistant_device_t *device)
 {
+    for (size_t i = 0; i < devices_list.num; i++) {
+        if (bt_addr_le_cmp(&device->addr, &devices_list.addr[i]) == 0) {
+            LOG_DBG("Device already added (%s)", device->name);
+            return;
+        }
+    }
+
+    if (devices_list.num > MAX_DEVICES_NUM) {
+        LOG_WRN("MAX devices reached");
+        return;
+    }
+
+    bt_addr_le_copy(&devices_list.addr[devices_list.num], &device->addr);
+    devices_list.num++;
+
     lea_assistant_ui_add_list_entry(device);
 }
 

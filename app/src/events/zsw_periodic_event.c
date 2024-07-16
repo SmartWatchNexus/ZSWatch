@@ -100,20 +100,14 @@ static void handle_fast_timeout(struct k_work *item)
 static int zsw_timer_init(void)
 {
     struct k_work_delayable *work = NULL;
-    zbus_chan_claim(&periodic_event_10s_chan, K_FOREVER);
     work = (struct k_work_delayable *)zbus_chan_user_data(&periodic_event_10s_chan);
     k_work_init_delayable(work, handle_slow_timeout);
-    zbus_chan_finish(&periodic_event_10s_chan);
 
-    zbus_chan_claim(&periodic_event_1s_chan, K_FOREVER);
     work = (struct k_work_delayable *)zbus_chan_user_data(&periodic_event_1s_chan);
     k_work_init_delayable(work, handle_mid_timeout);
-    zbus_chan_finish(&periodic_event_1s_chan);
 
-    zbus_chan_claim(&periodic_event_100ms_chan, K_FOREVER);
     work = (struct k_work_delayable *)zbus_chan_user_data(&periodic_event_100ms_chan);
     k_work_init_delayable(work, handle_fast_timeout);
-    zbus_chan_finish(&periodic_event_100ms_chan);
     return 0;
 }
 
